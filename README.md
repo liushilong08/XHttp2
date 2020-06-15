@@ -1,15 +1,29 @@
 # XHttp2
 
 [![](https://jitpack.io/v/xuexiangjys/XHttp2.svg)](https://jitpack.io/#xuexiangjys/XHttp2)
-[![api][apisvg]][api]
+[![api](https://img.shields.io/badge/API-14+-brightgreen.svg)](https://android-arsenal.com/api?level=14)
 [![I](https://img.shields.io/github/issues/xuexiangjys/XHttp2.svg)](https://github.com/xuexiangjys/XHttp2/issues)
 [![Star](https://img.shields.io/github/stars/xuexiangjys/XHttp2.svg)](https://github.com/xuexiangjys/XHttp2)
 
 一个功能强悍的网络请求库，使用RxJava2 + Retrofit2 + OKHttp组合进行封装。还不赶紧点击[使用说明文档](https://github.com/xuexiangjys/XHttp2/wiki)，体验一下吧！
 
+在提issue前，请先阅读[【提问的智慧】](https://xuexiangjys.blog.csdn.net/article/details/83344235)，并严格按照[issue模板](https://github.com/xuexiangjys/XHttp2/issues/new/choose)进行填写，节约大家的时间。
+
+在使用前，请一定要仔细阅读[使用说明文档](https://github.com/xuexiangjys/XHttp2/wiki),重要的事情说三遍！！！
+
+在使用前，请一定要仔细阅读[使用说明文档](https://github.com/xuexiangjys/XHttp2/wiki),重要的事情说三遍！！！
+
+在使用前，请一定要仔细阅读[使用说明文档](https://github.com/xuexiangjys/XHttp2/wiki),重要的事情说三遍！！！
+
 ## 关于我
 
-[![github](https://img.shields.io/badge/GitHub-xuexiangjys-blue.svg)](https://github.com/xuexiangjys)   [![csdn](https://img.shields.io/badge/CSDN-xuexiangjys-green.svg)](http://blog.csdn.net/xuexiangjys)
+[![github](https://img.shields.io/badge/GitHub-xuexiangjys-blue.svg)](https://github.com/xuexiangjys)   [![csdn](https://img.shields.io/badge/CSDN-xuexiangjys-green.svg)](http://blog.csdn.net/xuexiangjys)   [![简书](https://img.shields.io/badge/简书-xuexiangjys-red.svg)](https://www.jianshu.com/u/6bf605575337)   [![掘金](https://img.shields.io/badge/掘金-xuexiangjys-brightgreen.svg)](https://juejin.im/user/598feef55188257d592e56ed)   [![知乎](https://img.shields.io/badge/知乎-xuexiangjys-violet.svg)](https://www.zhihu.com/people/xuexiangjys)
+
+## X系列库快速集成
+
+为了方便大家快速集成X系列框架库，我提供了一个空壳模版供大家参考使用: https://github.com/xuexiangjys/TemplateAppProject
+
+---
 
 ## 特征
 
@@ -41,6 +55,8 @@
 * 拥有统一的网络请求取消机制。
 
 点击查看[项目设计类图](https://github.com/xuexiangjys/XHttp2/blob/master/img/xhttp_uml.png)。
+
+---
 
 ## 1、演示（请star支持）
 
@@ -78,7 +94,8 @@ allprojects {
 ```
 dependencies {
   ...
-  implementation 'com.github.xuexiangjys:XHttp2:1.0.2'
+  implementation 'com.github.xuexiangjys:XHttp2:1.0.4'
+
   implementation 'com.google.code.gson:gson:2.8.2'
   implementation 'com.squareup.okhttp3:okhttp:3.10.0'
   implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
@@ -130,7 +147,7 @@ setHostnameVerifier | 设置https的全局访问规则
 setCertificates | 设置https的全局自签名证书
 setCookieStore | 设置全局cookie存取规则
 
---------------
+---
 
 ## 如何进行网络请求
 
@@ -157,7 +174,7 @@ setCookieStore | 设置全局cookie存取规则
 方法名 | 类型 | 默认值 | 备注
 :-|:-:|:-:|:-
 baseUrl | String | ／ | 设置该请求的baseUrl
-timeOut | long | 10000 | 设置超时时间
+timeOut | long | 15000 | 设置超时时间
 accessToken | boolean | false | 是否需要验证token
 threadType | String | ／ | 设置请求的线程调度类型
 syncRequest | boolean | false | 设置是否是同步请求（不开子线程）
@@ -218,7 +235,7 @@ XHttp.post("/user/deleteUser")
 
 ```
 
---------------
+---
 
 ### 2、使用XHttpRequest封装的统一请求实体进行请求【仅支持post请求】
 
@@ -293,25 +310,41 @@ XHttpSDK.executeToMain(req, new ProgressLoadingSubscriber<Boolean>(mIProgressLoa
     }
 });
 ```
---------------
+---
 
-### 3、使用XHttpProxy代理进行请求【仅支持post请求】
+### 3、使用XHttpProxy代理进行请求
 
 在使用它之前，需要下载/定义对应的接口协议，如下：
 
 ```
 /**
- * 订单
+ * 图书管理
  */
-public interface IOrder {
+public interface IBook {
     /**
      * 购买书
      *
-     * @param bookId 用户名
-     * @param userId 密码
+     * @param bookId 图书ID
+     * @param userId 用户ID
+     * @param number 购买数量
      */
-    @NetMethod(ParameterNames = {"bookId", "userId", "number"}, Url = "/order/addOrder/")
+    @NetMethod(parameterNames = {"bookId", "userId", "number"}, url = "/order/addOrder/", accessToken = false)
     Observable<Boolean> buyBook(int bookId, int userId, int number);
+    /**
+     * 获取图书
+     *
+     * @param pageNum 第几页数
+     * @param pageSize 每页的数量
+     */
+    @NetMethod(parameterNames = {"pageNum", "pageSize"}, paramType = FORM_BODY, url = "/book/findBooks/", accessToken = false)
+    Observable<List<Book>> getBooks(int pageNum, int pageSize);
+
+    /**
+     * 获取所有图书
+     *
+     */
+    @NetMethod(action = GET, url = "/book/getAllBook", accessToken = false)
+    Observable<List<Book>> getAllBooks();
 }
 ```
 
@@ -321,18 +354,19 @@ public interface IOrder {
 
 注解参数 | 类型 | 默认值 | 备注
 :-|:-:|:-:|:-
-ParameterNames | String\[\] | {} | 参数名集合
-BaseUrl | String | "" | 设置该请求的baseUrl
-Url | String | "" | 请求网络接口地址
-Timeout | long | 10000 | 设置超时时间
-AccessToken | boolean | true | 设置是否需要验证token
-CacheMode | CacheMode | CacheMode.NO_CACHE | 设置请求的缓存模式
+parameterNames | String\[\] | {} | 参数名集合
+paramType | int | JSON=1 | param的类型
+action | String | POST="post" | 请求动作
+baseUrl | String | "" | 设置该请求的baseUrl
+url | String | "" | 请求网络接口地址
+timeout | long | 15000 | 设置超时时间
+keepJson | boolean | false | 是否保存json
+accessToken | boolean | true | 设置是否需要验证token
+cacheMode | CacheMode | CacheMode.NO_CACHE | 设置请求的缓存模式
 
 2.使用XHttpProxy进行请求。
 
 构建一个XHttpProxy，将定义的api接口传入后，直接调用接口进行请求。
-
-构造XHttpProxy可以传入`isPostJson`来决定请求是上传json数据还是键值对数据, 默认是`true`，上传json数据。
 
 构造XHttpProxy可以传入`ThreadType`,默认是`ThreadType.TO_MAIN`。
 
@@ -363,7 +397,7 @@ XHttpProxy.proxy(TestApi.IOrder.class)
         });
 ```
 
---------------
+---
 
 ### 4、文件上传和下载
 
@@ -423,7 +457,7 @@ XHttp.downLoad(BookAdapter.getBookImgUrl(book))
         });
 ```
 
---------------
+---
 
 ## 高阶网络请求操作
 
@@ -765,15 +799,15 @@ public interface UserService {
 
     @POST("/user/registerUser/")
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    Observable<ApiResult> register(@Body RequestBody jsonBody);
+    Observable<ApiResult> register(@Body User user);
 }
 ```
 
 2.使用`XHttp.custom()`构建的`CustomRequest`进行请求，你可以使用`apiCall`和`call`进行请求。
 
-* apiCall: 针对的是retrofit定义的接口，返回的是Observable<ApiResult<T>>的情况。对于上面定义的第一个接口`registerUser`。
+* apiCall: 针对的是retrofit定义的接口，返回的是Observable<ApiResult<T>>的情况，对ApiResult进行拆包，直接获取数据。对于上面定义的第一个接口`registerUser`。
 
-* call: 针对的是retrofit定义的接口，返回的是Observable<T>的情况。对于上面定义的第二个接口`register`。
+* call: 针对的是retrofit定义的接口，返回的是Observable<T>的情况，不对ApiResult进行拆包。对于上面定义的第二个接口`register`。
 
 使用示例如下:
 
@@ -919,24 +953,29 @@ XHttp.get("/book/getAllBook")
 -keep class com.google.gson.examples.android.model.** { *; }
 ```
 
+---
+
 ## 特别感谢
 
 https://github.com/zhou-you/RxEasyHttp
 
+## 如果觉得项目还不错，可以考虑打赏一波
+
+> 你的打赏是我维护的动力，我将会列出所有打赏人员的清单在下方作为凭证，打赏前请留下打赏项目的备注！
+
+![](https://github.com/xuexiangjys/Resource/blob/master/img/pay/alipay.jpeg) &emsp; ![](https://github.com/xuexiangjys/Resource/blob/master/img/pay/weixinpay.jpeg)
+
+感谢下面小伙伴的打赏：
+
+姓名 | 金额 | 方式
+:-|:-|:-
+*声 | 50￥ | 微信
 
 ## 联系方式
 
 [![](https://img.shields.io/badge/点击一键加入QQ交流群-602082750-blue.svg)](http://shang.qq.com/wpa/qunwpa?idkey=9922861ef85c19f1575aecea0e8680f60d9386080a97ed310c971ae074998887)
 
-新手提问前，请先阅读[【提问的智慧】](http://www.binarywang.com/article/smart-questions)
- 
 ![](https://github.com/xuexiangjys/XPage/blob/master/img/qq_group.jpg)
-
-[xhsvg]: https://img.shields.io/badge/XHttp2-v1.0.2-brightgreen.svg
-[xh]: https://github.com/xuexiangjys/XHttp2
-[apisvg]: https://img.shields.io/badge/API-14+-brightgreen.svg
-[api]: https://android-arsenal.com/api?level=14
-
 
 [demo-gif]: https://github.com/xuexiangjys/XHttp2/blob/master/img/demo.gif
 [download-svg]: https://img.shields.io/badge/downloads-2.61M-blue.svg

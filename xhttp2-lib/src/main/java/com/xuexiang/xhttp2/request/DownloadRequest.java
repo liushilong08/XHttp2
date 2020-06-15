@@ -16,7 +16,6 @@
 
 package com.xuexiang.xhttp2.request;
 
-import com.xuexiang.xhttp2.XHttp;
 import com.xuexiang.xhttp2.callback.CallBack;
 import com.xuexiang.xhttp2.subsciber.DownloadSubscriber;
 import com.xuexiang.xhttp2.transform.HandleErrTransformer;
@@ -36,7 +35,7 @@ import okhttp3.ResponseBody;
  * @author xuexiang
  * @since 2018/6/25 上午12:53
  */
-@SuppressWarnings(value = {"unchecked", "deprecation"})
+@SuppressWarnings(value = {"unchecked"})
 public class DownloadRequest extends BaseRequest<DownloadRequest> {
 
     public DownloadRequest(String url) {
@@ -102,7 +101,7 @@ public class DownloadRequest extends BaseRequest<DownloadRequest> {
     @Override
     protected Observable<ResponseBody> generateRequest() {
         if (mIsUseBaseUrl) {
-            return mApiManager.downloadFile(XHttp.getBaseUrl() + getUrl());
+            return mApiManager.downloadFile(getBaseUrl() + getUrl());
         } else {
             return mApiManager.downloadFile(mUrl);
         }

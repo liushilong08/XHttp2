@@ -23,6 +23,7 @@ import com.xuexiang.xhttp2.model.XHttpRequest;
 import com.xuexiang.xhttp2demo.entity.Book;
 import com.xuexiang.xhttp2demo.entity.LoginInfo;
 import com.xuexiang.xhttp2demo.entity.User;
+import com.xuexiang.xhttp2demo.http.request.CustomApiResult;
 
 import java.util.List;
 
@@ -31,8 +32,10 @@ import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.GET;
 
 import static com.xuexiang.xhttp2.annotation.NetMethod.FORM_BODY;
+import static com.xuexiang.xhttp2.annotation.NetMethod.GET;
 
 /**
  * 测试api协议
@@ -101,6 +104,13 @@ public class TestApi {
          */
         @NetMethod(parameterNames = {"pageNum", "pageSize"}, paramType = FORM_BODY, url = "/book/findBooks/", accessToken = false)
         Observable<List<Book>> getBooks(int pageNum, int pageSize);
+
+        /**
+         * 获取所有图书
+         *
+         */
+        @NetMethod(action = GET, url = "/book/getAllBook", accessToken = false)
+        Observable<List<Book>> getAllBooks();
     }
 
 
@@ -127,6 +137,11 @@ public class TestApi {
         @POST("/authorization/login/")
         @Headers({"Content-Type: application/json", "Accept: application/json"})
         Observable<ApiResult<LoginInfo>> login(@Body RequestBody jsonBody);
+
+
+        @POST("/authorization/login/")
+        @Headers({"Content-Type: application/json", "Accept: application/json"})
+        Observable<ApiResult<LoginInfo>> login(@Body User user);
     }
 
 
@@ -141,7 +156,10 @@ public class TestApi {
 
         @POST("/user/registerUser/")
         @Headers({"Content-Type: application/json", "Accept: application/json"})
-        Observable<ApiResult> register(@Body RequestBody jsonBody);
+        Observable<ApiResult> register(@Body User user);
+
+        @GET("/test/testCustomResult")
+        Observable<CustomApiResult<Boolean>> testCustomResult();
     }
 
 

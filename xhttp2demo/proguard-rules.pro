@@ -18,7 +18,7 @@
 #保护注解
 -keepattributes *Annotation*
 #忽略警告
--ignorewarning
+-ignorewarnings
 
 ##记录生成的日志数据,gradle build时在本项目根目录输出##
 #apk 包内所有 class 的内部结构
@@ -116,6 +116,18 @@
 #######===================================混淆保护自己项目的部分代码以及引用的第三方jar包library=============================#######
 #如果引用了v4或者v7包
 -dontwarn android.support.**
+
+# AndroidX 防止混淆
+-dontwarn com.google.android.material.**
+-dontnote com.google.android.material.**
+-dontwarn androidx.**
+-keep class com.google.android.material.** {*;}
+-keep class androidx.** {*;}
+-keep public class * extends androidx.**
+-keep interface androidx.** {*;}
+-keepclassmembers class * {
+    @androidx.annotation.Keep *;
+}
 
 # zxing
 -dontwarn com.google.zxing.**

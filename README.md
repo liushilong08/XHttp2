@@ -91,6 +91,24 @@ allprojects {
 
 2.然后在dependencies添加:
 
+以下是版本说明，选择一个即可。
+
+* androidx版本：2.0.0及以上
+
+```
+dependencies {
+  ...
+  implementation 'com.github.xuexiangjys:XHttp2:2.0.1'
+
+  implementation 'com.google.code.gson:gson:2.8.5'
+  implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+  implementation 'io.reactivex.rxjava2:rxjava:2.2.0'
+  implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+}
+```
+
+* support版本：1.0.4及以下
+
 ```
 dependencies {
   ...
@@ -102,6 +120,8 @@ dependencies {
   implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 }
 ```
+
+
 
 3.在Application中初始化XHttpSDK
 
@@ -146,6 +166,7 @@ addCallAdapterFactory | 设置全局CallAdapter.Factory,默认RxJavaCallAdapterF
 setHostnameVerifier | 设置https的全局访问规则
 setCertificates | 设置https的全局自签名证书
 setCookieStore | 设置全局cookie存取规则
+setStrictMode | 设置严格模式，在严格模式下，json返回的data数据不能为null
 
 ---
 
@@ -963,21 +984,24 @@ https://github.com/zhou-you/RxEasyHttp
 
 > 你的打赏是我维护的动力，我将会列出所有打赏人员的清单在下方作为凭证，打赏前请留下打赏项目的备注！
 
-![](https://github.com/xuexiangjys/Resource/blob/master/img/pay/alipay.jpeg) &emsp; ![](https://github.com/xuexiangjys/Resource/blob/master/img/pay/weixinpay.jpeg)
+![pay.png](https://img.rruu.net/image/5f871d00045da)
 
 感谢下面小伙伴的打赏：
 
 姓名 | 金额 | 方式
 :-|:-|:-
 *声 | 50￥ | 微信
+**东 | 5￥ | 支付宝
 
 ## 联系方式
 
 [![](https://img.shields.io/badge/点击一键加入QQ交流群-602082750-blue.svg)](http://shang.qq.com/wpa/qunwpa?idkey=9922861ef85c19f1575aecea0e8680f60d9386080a97ed310c971ae074998887)
 
-![](https://github.com/xuexiangjys/XPage/blob/master/img/qq_group.jpg)
+> 更多资讯内容，欢迎扫描关注我的个人微信公众号:【我的Android开源之旅】
 
-[demo-gif]: https://github.com/xuexiangjys/XHttp2/blob/master/img/demo.gif
+![gzh_weixin.jpg](https://img.rruu.net/image/5f871cfff3194)
+
+[demo-gif]: https://img.rruu.net/image/5f7dc798ea8d9
 [download-svg]: https://img.shields.io/badge/downloads-2.61M-blue.svg
 [download-url]: https://github.com/xuexiangjys/XHttp2/blob/master/apk/xhttp2_demo_1.0.apk?raw=true
-[download-img]: https://github.com/xuexiangjys/XHttp2/blob/master/img/download.png
+[download-img]: https://img.rruu.net/image/5f7dc792910c3

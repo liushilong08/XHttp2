@@ -67,33 +67,101 @@ public final class XHttp {
     private volatile static XHttp sInstance = null;
     private static Application sContext;
 
-    public static final int DEFAULT_TIMEOUT_MILLISECONDS = 15000;     //默认的超时时间
-    public static final int DEFAULT_RETRY_COUNT = 0;                  //默认重试次数
-    public static final int DEFAULT_RETRY_INCREASE_DELAY = 0;         //默认重试叠加时间
-    public static final int DEFAULT_RETRY_DELAY = 500;                //默认重试延时
+    /**
+     * 默认的超时时间
+     */
+    public static final int DEFAULT_TIMEOUT_MILLISECONDS = 15000;
+    /**
+     * 默认重试次数
+     */
+    public static final int DEFAULT_RETRY_COUNT = 0;
+    /**
+     * 默认重试叠加时间
+     */
+    public static final int DEFAULT_RETRY_INCREASE_DELAY = 0;
+    /**
+     * 默认重试延时
+     */
+    public static final int DEFAULT_RETRY_DELAY = 500;
+    /**
+     * 默认缓存失效时间：永久有效
+     */
     public static final int DEFAULT_CACHE_NEVER_EXPIRE = -1;
 
     //======url地址=====//
-    private String mBaseUrl;                                          //全局BaseUrl
-    private String mSubUrl = "";                                      //全局SubUrl,介于BaseUrl和请求url之间
+    /**
+     * 全局BaseUrl
+     */
+    private String mBaseUrl;
+    /**
+     * 全局SubUrl,介于BaseUrl和请求url之间
+     */
+    private String mSubUrl = "";
     //======缓存=====//
-    private Cache mCache = null;                                      //OkHttp缓存对象
-    private CacheMode mCacheMode = CacheMode.NO_CACHE;                //缓存类型
-    private long mCacheTime = DEFAULT_CACHE_NEVER_EXPIRE;             //缓存时间
-    private File mCacheDirectory;                                     //缓存目录
-    private long mCacheMaxSize;                                       //缓存大小
+    /**
+     * OkHttp缓存对象
+     */
+    private Cache mCache = null;
+    /**
+     * 缓存类型
+     */
+    private CacheMode mCacheMode = CacheMode.NO_CACHE;
+    /**
+     * 缓存时间
+     */
+    private long mCacheTime = DEFAULT_CACHE_NEVER_EXPIRE;
+    /**
+     * 缓存目录
+     */
+    private File mCacheDirectory;
+    /**
+     * 缓存大小
+     */
+    private long mCacheMaxSize;
     //======请求重试=====//
-    private int mRetryCount = DEFAULT_RETRY_COUNT;                    //重试次数默认3次
-    private int mRetryDelay = DEFAULT_RETRY_DELAY;                    //延迟xxms重试
-    private int mRetryIncreaseDelay = DEFAULT_RETRY_INCREASE_DELAY;    //叠加延迟
+    /**
+     * 重试次数默认3次
+     */
+    private int mRetryCount = DEFAULT_RETRY_COUNT;
+    /**
+     * 延迟xxms重试
+     */
+    private int mRetryDelay = DEFAULT_RETRY_DELAY;
+    /**
+     * 叠加延迟
+     */
+    private int mRetryIncreaseDelay = DEFAULT_RETRY_INCREASE_DELAY;
     //======全局请求头、参数=====//
-    private HttpHeaders mCommonHeaders;                               //全局公共请求头
-    private HttpParams mCommonParams;                                 //全局公共请求参数
+    /**
+     * 全局公共请求头
+     */
+    private HttpHeaders mCommonHeaders;
+    /**
+     * 全局公共请求参数
+     */
+    private HttpParams mCommonParams;
     //======Builder=====//
-    private OkHttpClient.Builder mOkHttpClientBuilder;                //okHttp请求的客户端
-    private Retrofit.Builder mRetrofitBuilder;                        //Retrofit请求Builder
-    private RxCache.Builder mRxCacheBuilder;                          //RxCache请求的Builder
-    private CookieManager mCookieJar;                                 //Cookie管理
+    /**
+     * okHttp请求的客户端
+     */
+    private OkHttpClient.Builder mOkHttpClientBuilder;
+    /**
+     * Retrofit请求Builder
+     */
+    private Retrofit.Builder mRetrofitBuilder;
+    /**
+     * RxCache请求的Builder
+     */
+    private RxCache.Builder mRxCacheBuilder;
+    /**
+     * Cookie管理
+     */
+    private CookieManager mCookieJar;
+
+    /**
+     * 严格模式，在严格模式下，json返回的data数据不能为null
+     */
+    private boolean mStrictMode;
 
     //==================初始化=====================//
 
@@ -108,7 +176,8 @@ public final class XHttp {
         mOkHttpClientBuilder.writeTimeout(DEFAULT_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS);
         mRetrofitBuilder = new Retrofit.Builder();
         mRxCacheBuilder = new RxCache.Builder().init(sContext)
-                .diskConverter(new SerializableDiskConverter());      //目前只支持Serializable和Gson缓存其它可以自己扩展
+                //目前只支持Serializable和Gson缓存其它可以自己扩展
+                .diskConverter(new SerializableDiskConverter());
     }
 
     /**
@@ -183,10 +252,9 @@ public final class XHttp {
     //==================日志、调试模式设置=====================//
 
     /**
-     * 设置日志的打印模式
+     * 设置自定义日志打印拦截器
      *
      * @param loggingInterceptor 日志拦截器
-     * @return
      */
     public XHttp debug(HttpLoggingInterceptor loggingInterceptor) {
         if (loggingInterceptor != null) {
@@ -200,6 +268,8 @@ public final class XHttp {
 
     /**
      * 设置网络请求的调试模式
+     *
+     * @param isDebug 是否开启调试模式
      */
     public XHttp debug(boolean isDebug) {
         if (isDebug) {
@@ -212,6 +282,8 @@ public final class XHttp {
 
     /**
      * 设置网络请求的调试模式
+     *
+     * @param tag 调试日志的tag
      */
     public XHttp debug(String tag) {
         if (!TextUtils.isEmpty(tag)) {
@@ -221,6 +293,23 @@ public final class XHttp {
             HttpLog.debug(false);
         }
         return this;
+    }
+
+    /**
+     * 设置严格模式，在严格模式下，json返回的data数据不能为null
+     *
+     * @param strictMode 是否开启严格模式
+     */
+    public XHttp setStrictMode(boolean strictMode) {
+        mStrictMode = strictMode;
+        return this;
+    }
+
+    /**
+     * @return 是否在严格模式下
+     */
+    public boolean isInStrictMode() {
+        return mStrictMode;
     }
 
     //==================baseUrl、SubUrl设置=====================//
@@ -295,7 +384,9 @@ public final class XHttp {
      * 全局设置超时重试次数
      */
     public XHttp setRetryCount(int retryCount) {
-        if (retryCount < 0) throw new IllegalArgumentException("mRetryCount must >= 0");
+        if (retryCount < 0) {
+            throw new IllegalArgumentException("mRetryCount must >= 0");
+        }
         mRetryCount = retryCount;
         return this;
     }
@@ -311,7 +402,9 @@ public final class XHttp {
      * 全局设置超时重试延迟时间
      */
     public XHttp setRetryDelay(int retryDelay) {
-        if (retryDelay < 0) throw new IllegalArgumentException("mRetryDelay must > 0");
+        if (retryDelay < 0) {
+            throw new IllegalArgumentException("mRetryDelay must > 0");
+        }
         mRetryDelay = retryDelay;
         return this;
     }
@@ -327,8 +420,9 @@ public final class XHttp {
      * 全局设置超时重试延迟叠加时间
      */
     public XHttp setRetryIncreaseDelay(int retryIncreaseDelay) {
-        if (retryIncreaseDelay < 0)
+        if (retryIncreaseDelay < 0) {
             throw new IllegalArgumentException("mRetryIncreaseDelay must >= 0");
+        }
         mRetryIncreaseDelay = retryIncreaseDelay;
         return this;
     }
@@ -383,7 +477,9 @@ public final class XHttp {
      * 设置全局的缓存过期时间
      */
     public XHttp setCacheTime(long cacheTime) {
-        if (cacheTime <= -1) cacheTime = DEFAULT_CACHE_NEVER_EXPIRE;
+        if (cacheTime <= -1) {
+            cacheTime = DEFAULT_CACHE_NEVER_EXPIRE;
+        }
         mCacheTime = cacheTime;
         return this;
     }
@@ -414,8 +510,9 @@ public final class XHttp {
      * 全局设置缓存的版本，默认为1，缓存的版本号
      */
     public XHttp setCacheVersion(int cacheVersion) {
-        if (cacheVersion < 0)
+        if (cacheVersion < 0) {
             throw new IllegalArgumentException("cache version must > 0");
+        }
         mRxCacheBuilder.appVersion(cacheVersion);
         return this;
     }
@@ -465,7 +562,9 @@ public final class XHttp {
      * 添加全局公共请求参数
      */
     public XHttp addCommonParams(HttpParams commonParams) {
-        if (mCommonParams == null) mCommonParams = new HttpParams();
+        if (mCommonParams == null) {
+            mCommonParams = new HttpParams();
+        }
         mCommonParams.put(commonParams);
         return this;
     }
@@ -474,7 +573,9 @@ public final class XHttp {
      * 添加全局公共请求参数
      */
     public XHttp addCommonHeaders(HttpHeaders commonHeaders) {
-        if (mCommonHeaders == null) mCommonHeaders = new HttpHeaders();
+        if (mCommonHeaders == null) {
+            mCommonHeaders = new HttpHeaders();
+        }
         mCommonHeaders.put(commonHeaders);
         return this;
     }

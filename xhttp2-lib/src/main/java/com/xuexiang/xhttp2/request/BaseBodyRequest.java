@@ -44,14 +44,34 @@ import retrofit2.http.Body;
  */
 @SuppressWarnings(value = {"unchecked"})
 public abstract class BaseBodyRequest<R extends BaseBodyRequest> extends BaseRequest<R> {
-    protected String mString;                                   //上传的文本内容
-    protected MediaType mMediaType;                                   //上传文本的类型
-    protected String mJson;                                     //上传的Json
-    protected byte[] mBytes;                                       //上传的字节数据
-    protected Object mObject;                                   //上传的对象
-    protected RequestBody mRequestBody;                         //自定义的请求体
-
-    private UploadType mUploadType = UploadType.PART;           //文件上传方式
+    /**
+     * 上传的文本内容
+     */
+    protected String mString;
+    /**
+     * 上传文本的类型
+     */
+    protected MediaType mMediaType;
+    /**
+     * 上传的Json
+     */
+    protected String mJson;
+    /**
+     * 上传的字节数据
+     */
+    protected byte[] mBytes;
+    /**
+     * 上传的对象
+     */
+    protected Object mObject;
+    /**
+     * 自定义的请求体
+     */
+    protected RequestBody mRequestBody;
+    /**
+     * 文件上传方式
+     */
+    private UploadType mUploadType = UploadType.PART;
 
     /**
      * 构建请求
@@ -192,26 +212,33 @@ public abstract class BaseBodyRequest<R extends BaseBodyRequest> extends BaseReq
 
     @Override
     protected Observable<ResponseBody> generateRequest() {
-        if (mRequestBody != null) { //自定义的请求体
+        if (mRequestBody != null) {
+            // 自定义的请求体
             return mApiManager.postBody(getUrl(), mRequestBody);
-        } else if (mJson != null) {//上传的Json
+        } else if (mJson != null) {
+            // 上传的Json
             RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), mJson);
             return mApiManager.postJson(getUrl(), body);
-        } else if (mObject != null) {//自定义的请求object
+        } else if (mObject != null) {
+            // 自定义的请求object
             return mApiManager.postBody(getUrl(), mObject);
-        } else if (mString != null) {//上传的文本内容
+        } else if (mString != null) {
+            // 上传的文本内容
             RequestBody body = RequestBody.create(mMediaType, mString);
             return mApiManager.postBody(getUrl(), body);
-        } else if (mBytes != null) {//上传的字节数据
+        } else if (mBytes != null) {
+            // 上传的字节数据
             RequestBody body = RequestBody.create(MediaType.parse("application/octet-stream"), mBytes);
             return mApiManager.postBody(getUrl(), body);
         }
         if (mParams.fileParamsMap.isEmpty()) {
             return mApiManager.post(getUrl(), mParams.urlParamsMap);
         } else {
-            if (mUploadType == UploadType.PART) {//part方式上传
+            if (mUploadType == UploadType.PART) {
+                // part方式上传
                 return uploadFilesWithParts();
-            } else {//body方式上传
+            } else {
+                // body方式上传
                 return uploadFilesWithBodys();
             }
         }
@@ -270,11 +297,9 @@ public abstract class BaseBodyRequest<R extends BaseBodyRequest> extends BaseReq
         Utils.checkNotNull(requestBody, "requestBody==null fileWrapper.file must is File/InputStream/byte[]");
         if (fileWrapper.responseCallBack != null) {
             UploadProgressRequestBody uploadProgressRequestBody = new UploadProgressRequestBody(requestBody, fileWrapper.responseCallBack);
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, fileWrapper.fileName, uploadProgressRequestBody);
-            return part;
+            return MultipartBody.Part.createFormData(key, fileWrapper.fileName, uploadProgressRequestBody);
         } else {
-            MultipartBody.Part part = MultipartBody.Part.createFormData(key, fileWrapper.fileName, requestBody);
-            return part;
+            return MultipartBody.Part.createFormData(key, fileWrapper.fileName, requestBody);
         }
     }
 
